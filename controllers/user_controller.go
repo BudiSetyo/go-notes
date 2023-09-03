@@ -18,16 +18,16 @@ func CreateUser(c echo.Context) error {
 
 	user := new(models.User)
 
+	if err := validate.Struct(user); err != nil {
+		return helpers.SendErrorResponse(c, http.StatusBadRequest, err.Error())
+	}
+
 	if err := c.Bind(user); err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid request payload")
 	}
 
 	if err := config.DB.Create(&user).Error; err != nil {
 		return helpers.SendErrorResponse(c, http.StatusInternalServerError, err.Error())
-	}
-
-	if err := validate.Struct(user); err != nil {
-		return helpers.SendErrorResponse(c, http.StatusBadRequest, err.Error())
 	}
 
 	return helpers.SendSuccessResponse(c, nil, "Create User Success")

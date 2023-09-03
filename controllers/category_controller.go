@@ -17,16 +17,17 @@ func CreateCategory(c echo.Context) error {
 	validate := validator.New()
 
 	category := new(models.Category)
+
+	if err := validate.Struct(category); err != nil {
+		return helpers.SendErrorResponse(c, http.StatusBadRequest, err.Error())
+	}
+
 	if err := c.Bind(category); err != nil {
 		return helpers.SendErrorResponse(c, http.StatusBadRequest, "Invalid request payload")
 	}
 
 	if err := config.DB.Create(&category).Error; err != nil {
 		return helpers.SendErrorResponse(c, http.StatusInternalServerError, err.Error())
-	}
-
-	if err := validate.Struct(category); err != nil {
-		return helpers.SendErrorResponse(c, http.StatusBadRequest, err.Error())
 	}
 
 	return helpers.SendSuccessResponse(c, nil, "Create category success")
@@ -60,12 +61,13 @@ func UpdateCategory(c echo.Context) error {
 
 	id, _ := strconv.Atoi(c.Param("id"))
 	category := new(models.Category)
-	if err := c.Bind(category); err != nil {
-		return helpers.SendErrorResponse(c, http.StatusBadRequest, "Invalid request payload")
-	}
 
 	if err := validate.Struct(category); err != nil {
 		return helpers.SendErrorResponse(c, http.StatusBadRequest, err.Error())
+	}
+
+	if err := c.Bind(category); err != nil {
+		return helpers.SendErrorResponse(c, http.StatusBadRequest, "Invalid request payload")
 	}
 
 	existingCategory := models.Category{}
