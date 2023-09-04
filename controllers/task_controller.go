@@ -17,16 +17,17 @@ func CreateTask(c echo.Context) error {
 	validate := validator.New()
 
 	task := new(models.Task)
+
 	if err := c.Bind(task); err != nil {
 		return helpers.SendErrorResponse(c, http.StatusBadRequest, "Invalid request payload")
 	}
 
-	if err := config.DB.Create(&task).Error; err != nil {
-		return helpers.SendErrorResponse(c, http.StatusInternalServerError, err.Error())
-	}
-
 	if err := validate.Struct(task); err != nil {
 		return helpers.SendErrorResponse(c, http.StatusBadRequest, err.Error())
+	}
+
+	if err := config.DB.Create(&task).Error; err != nil {
+		return helpers.SendErrorResponse(c, http.StatusInternalServerError, err.Error())
 	}
 
 	return helpers.SendSuccessResponse(c, nil, "Create task success")
@@ -38,7 +39,7 @@ func GetTasks(c echo.Context) error {
 		return helpers.SendErrorResponse(c, http.StatusInternalServerError, err.Error())
 	}
 
-	return helpers.SendSuccessResponse(c, nil, "Get task success")
+	return helpers.SendSuccessResponse(c, tasks, "Get task success")
 }
 
 func GetTaskByID(c echo.Context) error {
@@ -52,7 +53,7 @@ func GetTaskByID(c echo.Context) error {
 		return helpers.SendErrorResponse(c, http.StatusInternalServerError, err.Error())
 	}
 
-	return helpers.SendSuccessResponse(c, nil, "Get task success")
+	return helpers.SendSuccessResponse(c, task, "Get task success")
 }
 
 func UpdateTask(c echo.Context) error {
@@ -60,6 +61,7 @@ func UpdateTask(c echo.Context) error {
 
 	id, _ := strconv.Atoi(c.Param("id"))
 	task := new(models.Task)
+
 	if err := c.Bind(task); err != nil {
 		return helpers.SendErrorResponse(c, http.StatusBadRequest, "Invalid request payload")
 	}
