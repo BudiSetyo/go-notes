@@ -14,6 +14,7 @@ import (
 )
 
 func CreateUser(c echo.Context) error {
+
 	validate := validator.New()
 
 	user := new(models.User)
@@ -25,6 +26,8 @@ func CreateUser(c echo.Context) error {
 	if err := validate.Struct(user); err != nil {
 		return helpers.SendErrorResponse(c, http.StatusBadRequest, err.Error())
 	}
+
+	user.Password, _ = helpers.HashPassword(user.Password)
 
 	if err := config.DB.Create(&user).Error; err != nil {
 		return helpers.SendErrorResponse(c, http.StatusInternalServerError, err.Error())
