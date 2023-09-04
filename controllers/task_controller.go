@@ -18,12 +18,12 @@ func CreateTask(c echo.Context) error {
 
 	task := new(models.Task)
 
-	if err := validate.Struct(task); err != nil {
-		return helpers.SendErrorResponse(c, http.StatusBadRequest, err.Error())
-	}
-
 	if err := c.Bind(task); err != nil {
 		return helpers.SendErrorResponse(c, http.StatusBadRequest, "Invalid request payload")
+	}
+
+	if err := validate.Struct(task); err != nil {
+		return helpers.SendErrorResponse(c, http.StatusBadRequest, err.Error())
 	}
 
 	if err := config.DB.Create(&task).Error; err != nil {
@@ -62,12 +62,12 @@ func UpdateTask(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	task := new(models.Task)
 
-	if err := validate.Struct(task); err != nil {
-		return helpers.SendErrorResponse(c, http.StatusBadRequest, err.Error())
-	}
-
 	if err := c.Bind(task); err != nil {
 		return helpers.SendErrorResponse(c, http.StatusBadRequest, "Invalid request payload")
+	}
+
+	if err := validate.Struct(task); err != nil {
+		return helpers.SendErrorResponse(c, http.StatusBadRequest, err.Error())
 	}
 
 	existingTask := models.Task{}
