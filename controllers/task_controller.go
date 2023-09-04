@@ -39,7 +39,7 @@ func GetTasks(c echo.Context) error {
 		return helpers.SendErrorResponse(c, http.StatusInternalServerError, err.Error())
 	}
 
-	return helpers.SendSuccessResponse(c, nil, "Get task success")
+	return helpers.SendSuccessResponse(c, tasks, "Get task success")
 }
 
 func GetTaskByID(c echo.Context) error {
@@ -53,7 +53,7 @@ func GetTaskByID(c echo.Context) error {
 		return helpers.SendErrorResponse(c, http.StatusInternalServerError, err.Error())
 	}
 
-	return helpers.SendSuccessResponse(c, nil, "Get task success")
+	return helpers.SendSuccessResponse(c, task, "Get task success")
 }
 
 func UpdateTask(c echo.Context) error {
